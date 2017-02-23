@@ -160,6 +160,18 @@ namespace WindowsFormsApplication2
                 }
             }
 
+            FileInfo testFile = new FileInfo(folderToUse + "/" + fNameToUse);
+
+            //Make sure the file does not exist
+            if (testFile.Exists)
+            {
+                DialogResult dResult = MessageBox.Show("Your file already exists, overwrite?", "File already exists", MessageBoxButtons.YesNo);
+                if (dResult == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
             string fPath = folderToUse + "/" + fNameToUse;
 
             //Create a new document, don't forget the docx extension
@@ -219,18 +231,14 @@ namespace WindowsFormsApplication2
 
                 object fName = fileNameToUse;
 
-                //Fill the document with information (ToDo : use CALIBRI 26)
-                wDoc.Content.Text += "Put your text here";
-
+                //Fill the document with information
                 //A fontsize of 24 displays nicely on the label
-                //wDoc.ActiveWindow.Selection.Font.Size = 24;
-
                 Range wRange = wDoc.ActiveWindow.Selection.Range;
+                wRange.Text = "Put your text here";
                 wRange.Font.Size = 24;
                 wRange.Font.Name = "Calibri";
 
                 //Save the document
-                //wDoc.SaveAs2(ref mWApp, ref mWApp, ref mWApp);
                 wDoc.SaveAs2(ref fName);
 
                 //Close and clean the document
