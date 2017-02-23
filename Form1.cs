@@ -7,6 +7,8 @@ using ICSharpCode.SharpZipLib.Core;
 using System.IO;
 using System.Drawing.Printing;
 using Microsoft.Office.Interop.Word;
+using Microsoft.VisualBasic;
+using System.Drawing;
 
 /*
     This application allows you to print all XML labels from a ZIP file.
@@ -47,7 +49,7 @@ namespace WindowsFormsApplication2
                 DymoLabelsClass _dymoLabel = new DymoLabelsClass();
 
                 // this call returns a list of objects on the label
-                string[] objNames = _dymoLabel.GetObjectNames(false).Split(new Char [] {'|'});
+                string[] objNames = _dymoLabel.GetObjectNames(false).Split(new Char[] { '|' });
 
                 // Create OpenFileDialog
                 OpenFileDialog dlg = new OpenFileDialog();
@@ -129,10 +131,39 @@ namespace WindowsFormsApplication2
         {//Allows printing labels to the Toshiba B-FV4D
             PrintDocument pDoc = new PrintDocument();
 
-            string fPath = @"C:\Users\Koen\Desktop\TestDocsLabels\Name_Here.docx";
+            //Get the name to use for the document creation
+            string fNameToUse = Interaction.InputBox("What name will the document have?", "Name your document") + ".docx";
+
+            //Don't allow a blanc file name
+            if (string.IsNullOrEmpty(fNameToUse.ToString()))
+            {
+                MessageBox.Show("Please enter a file name.");
+                return;
+            }
+
+            //String that will hold the folder to be used
+            string folderToUse = null;
+
+            //Show the folder dialog and allow the user to select a path
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath))
+                {
+                    folderToUse = fbd.SelectedPath;
+                }
+                else
+                {
+                    MessageBox.Show("You have not selected a folder to write the document to.");
+                    return;
+                }
+            }
+
+            string fPath = folderToUse + "\"" + fNameToUse;
 
             //Create a new document, don't forget the docx extension
-            if (!CreateDocument("Name_Here.docx"))
+            if (!CreateDocument(fPath))
             {
                 MessageBox.Show("Error in file creation");
                 return;
@@ -186,7 +217,7 @@ namespace WindowsFormsApplication2
                 wDoc.PageSetup.LeftMargin = InchesToPoints(2.5f);
                 wDoc.PageSetup.RightMargin = InchesToPoints(2.5f);
 
-                object fName = @"C:\Users\Koen\Desktop\TestDocsLabels\" + fileNameToUse;
+                object fName = fileNameToUse;
 
                 //Fill the document with information (ToDo : use CALIBRI 26)
                 wDoc.Content.Text += "Put your text here";
