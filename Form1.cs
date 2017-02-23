@@ -5,9 +5,9 @@ using Dymo;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using System.IO;
+using System.Drawing.Printing;
 
 /*
-
     This application allows you to print all XML labels from a ZIP file.
     Simply click the button on the form, load the ZIP and the printer will start automatically.
     Has been tested for the DYMO LabelWriter 450 Turbo.
@@ -19,6 +19,12 @@ using System.IO;
     Disclaimer: I used some code to control the ZipStream, which can be found here -
     http://stackoverflow.com/questions/12715945/unzip-a-memorystream-contains-the-zip-file-and-get-the-files
     
+     EDIT 23 / 02 / 17
+    Added the option to print to a Toshiba B-FV4D, because my company asked me to.
+    Changed button names to allow the adaptation of the printing to the new printer.
+    Uses the Word 15.0 library reference.
+
+    ToDo : FilePicker & Inserting text dynamically, filename generation
 */
 
 namespace WindowsFormsApplication2
@@ -30,10 +36,7 @@ namespace WindowsFormsApplication2
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void Form1_Load(object sender, EventArgs e) { }
 
         private void printBtn_Click(object sender, EventArgs e)
         {
@@ -119,6 +122,99 @@ namespace WindowsFormsApplication2
             {
                 throw;
             }
+        }
+
+        private void btnPrintToshiba_Click(object sender, EventArgs e)
+        {//Allows printing labels to the Toshiba B-FV4D
+            PrintDocument pDoc = new PrintDocument();
+
+            string fPath = @"C:\Users\Koen\Desktop\TestDocsLabels\Name_Here.docx";
+
+            //Create a new document, don't forget the docx extension
+            if (!CreateDocument("Name_Here.docx"))
+            {
+                MessageBox.Show("Error in file creation");
+                return;
+            }
+
+            pDoc.PrinterSettings.PrintFileName = fPath;
+
+            //Point towards the labelprinter, make sure the name is correct
+            pDoc.PrinterSettings.PrinterName = "TOSHIBA B-FV4 LabelPrinter";
+
+            if (pDoc.PrinterSettings.IsValid)
+            {   //Print the document
+                //pDoc.Print();
+                MessageBox.Show("Print successfull! FilePath = " + fPath);
+            }
+            else MessageBox.Show("Printer is invalid.");
+        }
+
+        private bool CreateDocument(string fileNameToUse)
+        {//Setup and create the document
+            bool Returner = false;
+
+            try
+            {
+                //Create a new instance of the word application
+                Microsoft.Office.Interop.Word.Application wApp = new Microsoft.Office.Interop.Word.Application();
+
+                //Don't show the animation of the Word application
+                wApp.ShowAnimation = false;
+
+                //Don't show the Word app to the user
+                wApp.Visible = false;
+
+                //Catch missing variables by using an object
+                object mWApp = System.Reflection.Missing.Value;
+
+                //Create a new document
+                Microsoft.Office.Interop.Word.Document wDoc = wApp.Documents.Add(ref mWApp, ref mWApp, ref mWApp, ref mWApp);
+
+                /*
+                The margins for our type of paper are
+                            Upper: 0.5f
+                Left: 2.5f                  Right: 2.5f
+                            Lower: 5f
+                */
+
+                //Because this is a label, no header nor footer will be added, we do need to set the margins tough.
+                wDoc.PageSetup.Orientation = Microsoft.Office.Interop.Word.WdOrientation.wdOrientPortrait;
+                wDoc.PageSetup.TopMargin = InchesToPoints(0.5f);
+                wDoc.PageSetup.BottomMargin = InchesToPoints(5f);
+                wDoc.PageSetup.LeftMargin = InchesToPoints(2.5f);
+                wDoc.PageSetup.RightMargin = InchesToPoints(2.5f);
+
+                object fName = @"C:\Users\Koen\Desktop\TestDocsLabels\" + fileNameToUse;
+
+                //Fill the document with information (ToDo : use CALIBRI 26)
+                wDoc.Content.Text += "Put your text here";
+
+                //Save the document
+                wDoc.SaveAs2(ref mWApp, ref mWApp, ref mWApp);
+
+                //Close and clean the document
+                wDoc.Close(ref mWApp, ref mWApp, ref mWApp);
+
+                wDoc = null;
+
+                wApp.Quit();
+
+                wApp = null;
+
+                Returner = true;
+            }
+            catch (Exception)
+            {
+                Returner = false;
+            }
+
+            return Returner;
+        }
+
+        private float InchesToPoints(float fInches)
+        {
+            return fInches * 72.0f;
         }
     }
 }
