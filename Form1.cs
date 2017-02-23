@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using System.IO;
 using System.Drawing.Printing;
+using Microsoft.Office.Interop.Word;
 
 /*
     This application allows you to print all XML labels from a ZIP file.
@@ -190,8 +191,16 @@ namespace WindowsFormsApplication2
                 //Fill the document with information (ToDo : use CALIBRI 26)
                 wDoc.Content.Text += "Put your text here";
 
+                //A fontsize of 24 displays nicely on the label
+                //wDoc.ActiveWindow.Selection.Font.Size = 24;
+
+                Range wRange = wDoc.ActiveWindow.Selection.Range;
+                wRange.Font.Size = 24;
+                wRange.Font.Name = "Calibri";
+
                 //Save the document
-                wDoc.SaveAs2(ref mWApp, ref mWApp, ref mWApp);
+                //wDoc.SaveAs2(ref mWApp, ref mWApp, ref mWApp);
+                wDoc.SaveAs2(ref fName);
 
                 //Close and clean the document
                 wDoc.Close(ref mWApp, ref mWApp, ref mWApp);

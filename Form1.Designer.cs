@@ -62,6 +62,7 @@
             this.btnPrintToshiba.TabIndex = 4;
             this.btnPrintToshiba.Text = "Open File (Toshiba)";
             this.btnPrintToshiba.UseVisualStyleBackColor = true;
+            this.btnPrintToshiba.Click += new System.EventHandler(this.btnPrintToshiba_Click);
             // 
             // Form1
             // 
