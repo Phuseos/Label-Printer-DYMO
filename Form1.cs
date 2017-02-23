@@ -27,7 +27,7 @@ using System.Drawing;
     Changed button names to allow the adaptation of the printing to the new printer.
     Uses the Word 15.0 library reference.
 
-    ToDo : FilePicker & Inserting text dynamically, filename generation
+    ToDo : Inserting text dynamically
 */
 
 namespace WindowsFormsApplication2
@@ -160,7 +160,7 @@ namespace WindowsFormsApplication2
                 }
             }
 
-            string fPath = folderToUse + "\"" + fNameToUse;
+            string fPath = folderToUse + "/" + fNameToUse;
 
             //Create a new document, don't forget the docx extension
             if (!CreateDocument(fPath))
