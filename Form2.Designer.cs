@@ -83,7 +83,7 @@
             this.btnPrintFromFile.Name = "btnPrintFromFile";
             this.btnPrintFromFile.Size = new System.Drawing.Size(140, 23);
             this.btnPrintFromFile.TabIndex = 4;
-            this.btnPrintFromFile.Text = "Print from file";
+            this.btnPrintFromFile.Text = "Read text from file";
             this.btnPrintFromFile.UseVisualStyleBackColor = true;
             this.btnPrintFromFile.Click += new System.EventHandler(this.btnPrintFromFile_Click);
             // 

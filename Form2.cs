@@ -4,6 +4,8 @@ using System;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication2
@@ -159,7 +161,52 @@ namespace WindowsFormsApplication2
 
         private void btnPrintFromFile_Click(object sender, EventArgs e)
         {//Load information from a word document into the textbox || Print instantly
-            //ToDo
+            int dSize = -1;
+            OpenFileDialog ofDiag = new OpenFileDialog();
+
+            //Show the dialog 
+            DialogResult dRes = ofDiag.ShowDialog();
+
+            string fPath = null;
+
+            if (dRes == DialogResult.OK)
+            {
+                fPath = ofDiag.FileName;
+                try
+                {
+                    //string fText = File.ReadAllText(fPath);
+                    Microsoft.Office.Interop.Word.Application app = new Microsoft.Office.Interop.Word.Application();
+                    Document doc = app.Documents.Open(fPath);
+
+                    app.ShowAnimation = false;
+                    app.Visible = false;
+
+                    //Get all words
+                    string fText = doc.Content.Text;
+
+                    dSize = fText.Length;
+
+                    if (dSize > 260)
+                    {
+                        MessageBox.Show("The file has too many characters, this will be shortend.");
+                    }
+
+                    txtToshLabel.Text = SpliceText(fText, 19);
+
+                    doc.Close();
+                    app.Quit();
+
+                }
+                catch (IOException)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public static string SpliceText(string text, int lineLength)
+        {
+            return Regex.Replace(text, "(.{" + lineLength + "})", "$1" + Environment.NewLine);
         }
     }
 }
