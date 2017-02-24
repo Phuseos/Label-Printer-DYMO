@@ -5,10 +5,6 @@ using Dymo;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
 using System.IO;
-using System.Drawing.Printing;
-using Microsoft.Office.Interop.Word;
-using Microsoft.VisualBasic;
-using System.Drawing;
 
 /*
     This application allows you to print all XML labels from a ZIP file.
@@ -128,141 +124,12 @@ namespace WindowsFormsApplication2
         }
 
         private void btnPrintToshiba_Click(object sender, EventArgs e)
-        {//Allows printing labels to the Toshiba B-FV4D
-            PrintDocument pDoc = new PrintDocument();
-
-            //Get the name to use for the document creation
-            string fNameToUse = Interaction.InputBox("What name will the document have?", "Name your document") + ".docx";
-
-            //Don't allow a blanc file name
-            if (string.IsNullOrEmpty(fNameToUse.ToString()))
-            {
-                MessageBox.Show("Please enter a file name.");
-                return;
-            }
-
-            //String that will hold the folder to be used
-            string folderToUse = null;
-
-            //Show the folder dialog and allow the user to select a path
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath))
-                {
-                    folderToUse = fbd.SelectedPath;
-                }
-                else
-                {
-                    MessageBox.Show("You have not selected a folder to write the document to.");
-                    return;
-                }
-            }
-
-            FileInfo testFile = new FileInfo(folderToUse + "/" + fNameToUse);
-
-            //Make sure the file does not exist
-            if (testFile.Exists)
-            {
-                DialogResult dResult = MessageBox.Show("Your file already exists, overwrite?", "File already exists", MessageBoxButtons.YesNo);
-                if (dResult == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            string fPath = folderToUse + "/" + fNameToUse;
-
-            //Create a new document, don't forget the docx extension
-            if (!CreateDocument(fPath))
-            {
-                MessageBox.Show("Error in file creation");
-                return;
-            }
-
-            pDoc.PrinterSettings.PrintFileName = fPath;
-
-            //Point towards the labelprinter, make sure the name is correct
-            pDoc.PrinterSettings.PrinterName = "TOSHIBA B-FV4 LabelPrinter";
-
-            if (pDoc.PrinterSettings.IsValid)
-            {   //Print the document
-                //pDoc.Print();
-                MessageBox.Show("Print successfull! FilePath = " + fPath);
-            }
-            else MessageBox.Show("Printer is invalid.");
-        }
-
-        private bool CreateDocument(string fileNameToUse)
-        {//Setup and create the document
-            bool Returner = false;
-
-            try
-            {
-                //Create a new instance of the word application
-                Microsoft.Office.Interop.Word.Application wApp = new Microsoft.Office.Interop.Word.Application();
-
-                //Don't show the animation of the Word application
-                wApp.ShowAnimation = false;
-
-                //Don't show the Word app to the user
-                wApp.Visible = false;
-
-                //Catch missing variables by using an object
-                object mWApp = System.Reflection.Missing.Value;
-
-                //Create a new document
-                Microsoft.Office.Interop.Word.Document wDoc = wApp.Documents.Add(ref mWApp, ref mWApp, ref mWApp, ref mWApp);
-
-                /*
-                The margins for our type of paper are
-                            Upper: 0.5f
-                Left: 2.5f                  Right: 2.5f
-                            Lower: 5f
-                */
-
-                //Because this is a label, no header nor footer will be added, we do need to set the margins tough.
-                wDoc.PageSetup.Orientation = Microsoft.Office.Interop.Word.WdOrientation.wdOrientPortrait;
-                wDoc.PageSetup.TopMargin = InchesToPoints(0.5f);
-                wDoc.PageSetup.BottomMargin = InchesToPoints(5f);
-                wDoc.PageSetup.LeftMargin = InchesToPoints(2.5f);
-                wDoc.PageSetup.RightMargin = InchesToPoints(2.5f);
-
-                object fName = fileNameToUse;
-
-                //Fill the document with information
-                //A fontsize of 24 displays nicely on the label
-                Range wRange = wDoc.ActiveWindow.Selection.Range;
-                wRange.Text = "Put your text here";
-                wRange.Font.Size = 24;
-                wRange.Font.Name = "Calibri";
-
-                //Save the document
-                wDoc.SaveAs2(ref fName);
-
-                //Close and clean the document
-                wDoc.Close(ref mWApp, ref mWApp, ref mWApp);
-
-                wDoc = null;
-
-                wApp.Quit();
-
-                wApp = null;
-
-                Returner = true;
-            }
-            catch (Exception)
-            {
-                Returner = false;
-            }
-
-            return Returner;
-        }
-
-        private float InchesToPoints(float fInches)
         {
-            return fInches * 72.0f;
+            // Create a new instance of the Form2 class
+            Form2 settingsForm = new Form2();
+
+            // Show the settings form
+            settingsForm.Show();
         }
     }
 }

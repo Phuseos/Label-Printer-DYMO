@@ -58,9 +58,9 @@
             // 
             this.btnPrintToshiba.Location = new System.Drawing.Point(71, 124);
             this.btnPrintToshiba.Name = "btnPrintToshiba";
-            this.btnPrintToshiba.Size = new System.Drawing.Size(125, 22);
+            this.btnPrintToshiba.Size = new System.Drawing.Size(125, 50);
             this.btnPrintToshiba.TabIndex = 4;
-            this.btnPrintToshiba.Text = "Open File (Toshiba)";
+            this.btnPrintToshiba.Text = "Make / Print Label (Toshiba)";
             this.btnPrintToshiba.UseVisualStyleBackColor = true;
             this.btnPrintToshiba.Click += new System.EventHandler(this.btnPrintToshiba_Click);
             // 
