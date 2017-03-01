@@ -23,7 +23,6 @@ using System.IO;
     Changed button names to allow the adaptation of the printing to the new printer.
     Uses the Word 15.0 library reference.
 
-    ToDo : Inserting text dynamically
 */
 
 namespace WindowsFormsApplication2
